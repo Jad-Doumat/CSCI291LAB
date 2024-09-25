@@ -1,0 +1,30 @@
+#include <stdio.h>
+#define COFFEE_TYPES 3
+#define INGREDIENT_TYPES 2
+#define MIN_THRESHOLD 5
+
+typedef struct {
+    
+    char name[20];
+    float price;
+    int ingredients[INGREDIENT_TYPES]; 
+} 
+Coffee;
+
+typedef struct {
+    char name[20];
+    int quantity;
+} Ingredient;
+
+void displayMenu(Coffee coffees[], Ingredient ingredients[], int coffeeCount);
+int confirmSelection(Coffee coffee);
+int handlePayment(float price);
+void updateIngredients(Coffee coffee, Ingredient ingredients[]);
+void alertOperator(Ingredient ingredients[], int ingredientCount);
+
+int main() {
+    Coffee coffees[COFFEE_TYPES] = {
+        {"Flat White", 2.5, {3, 2}},
+        {"Arabic", 3.0, {2, 3}},
+        {"Cappuccino", 3.5, {4, 3}}
+    }
