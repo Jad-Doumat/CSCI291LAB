@@ -1,0 +1,98 @@
+#include <stdio.h>
+#define COFFEE_TYPES 3
+#define INGREDIENT_TYPES 2
+#define MIN_THRESHOLD 5
+
+typedef struct {
+    char name[20];
+    float price;
+    int ingredients[INGREDIENT_TYPES]; 
+} Coffee;
+
+typedef struct {
+    char name[20];
+    int quantity;
+} Ingredient;
+
+void displayMenu(Coffee coffees[], Ingredient ingredients[], int coffeeCount) {
+    printf("The Coffee Menu:\n");
+    for (int i = 0; i < coffeeCount; i++) {
+        printf("%d. %s ------ $%.2f\n", i + 1, coffees[i].name, coffees[i].price);
+    }
+}
+
+int confirmSelection(Coffee coffee){
+    char confirm;
+    printf("You selected: %s. Price: $%.2f\n", coffee.name, coffee.price);
+    printf("Do you want to confirm? (1 for Yes) or (2 for No) ");
+    scanf(" %c", &confirm);
+    return (confirm == '1' || confirm == '2');
+}
+
+int handlePayment(float price) {
+    float payment;
+    printf("Please pay $%.2f: ", price);
+    scanf("%f", &payment);
+    if (payment >= price) {
+        printf("Payment successful! Change: $%.2f\n", payment - price);
+        return 1;
+    } else {
+        printf("Insufficient payment.\n");
+        return 0;
+    }
+}
+
+void updateIngredients(Coffee coffee, Ingredient ingredients[]) {
+    for (int i = 0; i < INGREDIENT_TYPES; i++) {
+        ingredients[i].quantity -= coffee.ingredients[i];
+        if (ingredients[i].quantity < MIN_THRESHOLD) {
+            printf("Low on %s. Only %d left!\n", ingredients[i].name, ingredients[i].quantity);
+        }
+    }
+}
+
+void alertOperator(Ingredient ingredients[], int ingredientCount) {
+    printf("Operator alert:\n");
+    for (int i = 0; i < ingredientCount; i++) {
+        if (ingredients[i].quantity < MIN_THRESHOLD) {
+            printf("Warning: Low on %s. Only %d left.\n", ingredients[i].name, ingredients[i].quantity);
+        }
+    }
+}
+
+int main() {
+    Coffee coffees[COFFEE_TYPES] = {
+        {"Espresso", 3.5, {3, 2}},
+        {"Cappuccino", 4.5, {2, 3}},
+        {"Mocha", 5.5, {4, 3}}
+    };
+
+    Ingredient ingredients[INGREDIENT_TYPES] = {
+        {"Milk", 10},
+        {"Coffee Beans", 15}
+    };
+
+    displayMenu(coffees, ingredients, COFFEE_TYPES);
+
+    int choice;
+    printf("Select a coffee by entering the number: ");
+    scanf("%d", &choice);1;
+    if (choice >= 1 && choice <= COFFEE_TYPES) {
+        Coffee selectedCoffee = coffees[choice - 1];
+        
+        if (confirmSelection(selectedCoffee)) {
+            if (handlePayment(selectedCoffee.price)) {
+                updateIngredients(selectedCoffee, ingredients);
+                alertOperator(ingredients, INGREDIENT_TYPES);
+            } else {
+                printf("Payment failed.\n");
+            }
+        } else {
+            printf("Order cancelled.\n");
+        }
+    } else {
+        printf("Invalid selection.\n");
+    }
+
+    return 0;
+}
