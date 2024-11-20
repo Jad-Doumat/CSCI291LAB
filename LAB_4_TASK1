@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *sourceFile, *destFile;
+    char line[100]; 
+    float value;
+    int invalidCount = 0;
+
+    sourceFile = fopen("data.txt", "r");
+    if (sourceFile == NULL) {
+        perror("Error opening source file");
+        return 1;
+    }
+
+    destFile = fopen("valid_data.txt", "w");
+    if (destFile == NULL) {
+        perror("Error opening destination file");
+        fclose(sourceFile);
+        return 1;
+    }
+
+    while (fgets(line, sizeof(line), sourceFile)) {
+        if (sscanf(line, "%f", &value) == 1) {
+            fprintf(destFile, "%f\n", value); 
+        } else {
+            invalidCount++; 
+        }
+    }
+
+    if (ferror(sourceFile)) {
+        perror("Error reading from source file");
+    }
+
+    printf("Number of invalid entries: %d\n", invalidCount);
+
+    fclose(sourceFile);
+    fclose(destFile);
+
+    return 0;
+}
